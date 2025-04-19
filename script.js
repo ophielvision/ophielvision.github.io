@@ -118,6 +118,37 @@ const assignVideoToCard = (card, videoSrc) => {
     document.removeEventListener("touchstart", userPlay);
   };
 
+  video.addEventListener("loadeddata", () => {
+    setTimeout(() => {
+      tryPlayVideoWithRetries(video);
+    }, 200); // Short delay before attempting playback
+  });
+
+  function tryPlayVideoWithRetries(video, attempts = 0) {
+    const maxAttempts = 10;
+    const delay = 300;
+
+    if (!video.paused && !video.ended && video.readyState >= 3) {
+      return; // Already playing
+    }
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Success!
+        })
+        .catch((err) => {
+          if (attempts < maxAttempts) {
+            setTimeout(() => {
+              tryPlayVideoWithRetries(video, attempts + 1);
+            }, delay);
+          } else {
+            console.warn('Video failed to play after retries:', err);
+          }
+        });
+    }
+  }
   document.addEventListener("click", userPlay);
   document.addEventListener("touchstart", userPlay);
 };
