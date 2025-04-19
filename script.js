@@ -1,165 +1,169 @@
-const NUM_VIDEOS = 116;
-const NUM_INTERTITLES = 207;
-const cards = [];
-let usedVideos = new Set();
-let usedIntertitles = new Set();
-let currentSession = [null, null, null, null];
-let intertitleCardIndex = -1;
+const TOTAL_VIDEOS = 116;
+const TOTAL_INTERTITLES = 207;
+const cardContainer = document.getElementById('cardContainer');
+const zoomOverlay = document.getElementById('zoomOverlay');
 
-const cardContainer = document.getElementById("cardContainer");
+const usedVideos = new Set();
+let usedIntertitle = false;
+let sessionData = [];
 
-function getRandomAvailableVideo(isIntertitle = false) {
-  const max = isIntertitle ? NUM_INTERTITLES : NUM_VIDEOS;
-  const used = isIntertitle ? usedIntertitles : usedVideos;
-  let index;
-  do {
-    index = Math.floor(Math.random() * max) + 1;
-  } while (used.has(index) && used.size < max);
-  used.add(index);
-  const padded = String(index).padStart(3, "0");
-  const folder = isIntertitle ? "intertitles" : "videos";
-  return `assets/${folder}/${isIntertitle ? "intertitle" : "video"}${padded}.webm`;
-}
-
-function createCard(index) {
-  const card = document.createElement("div");
-  card.classList.add("card");
-
-  const img = document.createElement("img");
-  img.src = "assets/placeholder.jpg";
-  img.alt = "Placeholder";
-
-  card.appendChild(img);
-
-  card.addEventListener("click", () => {
-    if (currentSession[index]) return;
-    let videoSrc;
-    if (index === intertitleCardIndex) {
-      videoSrc = getRandomAvailableVideo(true);
-    } else {
-      videoSrc = getRandomAvailableVideo(false);
-    }
-    currentSession[index] = videoSrc;
-    revealCard(card, videoSrc);
-  });
-
-  cards.push(card);
+const createCard = (index) => {
+  const card = document.createElement('div');
+  card.classList.add('card');
+  card.innerHTML = `<img src="./assets/placeholder.jpg" alt="Placeholder" />`;
+  card.addEventListener('click', () => onCardClick(card, index));
   return card;
-}
+};
 
-function revealCard(card, videoSrc) {
-  card.innerHTML = `
-    <div class="videoWrapper">
-      <video src="${videoSrc}" autoplay loop muted playsinline></video>
-      <button class="zoomButton">Zoom</button>
-    </div>
-  `;
+const generateVideoFilename = (prefix, number) =>
+  `${prefix}${String(number).padStart(3, '0')}.webm`;
 
-  const zoomButton = card.querySelector(".zoomButton");
-  zoomButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleExpandVideo(card);
+const getUniqueRandom = (total, usedSet) => {
+  let num;
+  do {
+    num = Math.floor(Math.random() * total) + 1;
+  } while (usedSet.has(num));
+  usedSet.add(num);
+  return num;
+};
+
+const onCardClick = (card, index) => {
+  // Prevent re-revealing
+  if (card.dataset.revealed === 'true') return;
+
+  let videoType = 'video';
+  let filename;
+
+  if (!usedIntertitle) {
+    usedIntertitle = true;
+    const interNum = getUniqueRandom(TOTAL_INTERTITLES, new Set());
+    filename = generateVideoFilename('intertitle', interNum);
+    videoType = 'intertitle';
+  } else {
+    const vidNum = getUniqueRandom(TOTAL_VIDEOS, usedVideos);
+    filename = generateVideoFilename('video', vidNum);
+  }
+
+  const videoPath = `assets/${videoType === 'intertitle' ? 'intertitles' : 'videos'}/${filename}`;
+  assignVideoToCard(card, videoPath);
+  sessionData[index] = { type: videoType, file: filename };
+};
+
+const assignVideoToCard = (card, videoSrc) => {
+  card.dataset.revealed = 'true';
+
+  const videoWrapper = document.createElement('div');
+  videoWrapper.classList.add('videoWrapper');
+
+  const video = document.createElement('video');
+  video.src = videoSrc;
+  video.autoplay = true;
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+
+  const zoomBtn = document.createElement('button');
+  zoomBtn.classList.add('zoomButton');
+  zoomBtn.innerText = '⤢';
+  zoomBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent card click
+    openZoom(videoSrc);
   });
-}
 
-function toggleExpandVideo(card) {
-  card.classList.toggle("expanded");
-}
+  videoWrapper.appendChild(video);
+  videoWrapper.appendChild(zoomBtn);
+  card.innerHTML = '';
+  card.appendChild(videoWrapper);
 
-function clearAllCards() {
-  cardContainer.innerHTML = "";
-  cards.length = 0;
+  video.load();
+};
+
+const openZoom = (videoSrc) => {
+  const clonedVideo = document.createElement('video');
+  clonedVideo.src = videoSrc;
+  clonedVideo.autoplay = true;
+  clonedVideo.loop = true;
+  clonedVideo.muted = true;
+  clonedVideo.playsInline = true;
+  clonedVideo.style.transform = 'scale(0.8)';
+
+  zoomOverlay.innerHTML = '';
+  zoomOverlay.appendChild(clonedVideo);
+  zoomOverlay.classList.add('active');
+
+  requestAnimationFrame(() => {
+    clonedVideo.style.transform = 'scale(1)';
+  });
+
+  zoomOverlay.onclick = () => {
+    clonedVideo.style.transform = 'scale(0.8)';
+    zoomOverlay.classList.remove('active');
+    setTimeout(() => {
+      zoomOverlay.innerHTML = '';
+    }, 300);
+  };
+};
+
+const clearAllCards = () => {
+  cardContainer.innerHTML = '';
   usedVideos.clear();
-  usedIntertitles.clear();
-  currentSession = [null, null, null, null];
-  intertitleCardIndex = Math.floor(Math.random() * 4);
+  usedIntertitle = false;
+  sessionData = [];
+  initCards();
+};
+
+const initCards = () => {
   for (let i = 0; i < 4; i++) {
     const card = createCard(i);
     cardContainer.appendChild(card);
   }
-}
+};
 
-function saveSession() {
+const saveSession = () => {
   const timestamp = new Date()
     .toISOString()
-    .replace(/T/, "_")
-    .replace(/:/g, "-")
-    .replace(/\..+/, "");
-  const data = {
-    session: currentSession,
-    intertitleCardIndex,
-  };
-  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `ophiel-${timestamp}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+    .replace(/[:.]/g, '-')
+    .replace('T', '_')
+    .split('Z')[0];
+  const fileName = `ophiel-${timestamp}.json`;
+  const blob = new Blob([JSON.stringify(sessionData)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  link.click();
+};
 
-function loadSession() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = ".json";
-  input.addEventListener("change", () => {
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (Array.isArray(data.session) && data.session.length === 4) {
-          currentSession = data.session;
-          intertitleCardIndex = data.intertitleCardIndex;
-          usedVideos.clear();
-          usedIntertitles.clear();
-          cardContainer.innerHTML = "";
-          cards.length = 0;
-          data.session.forEach((videoSrc, i) => {
-            const card = document.createElement("div");
-            card.classList.add("card");
-            if (videoSrc) {
-              currentSession[i] = videoSrc;
-              if (videoSrc.includes("intertitle")) {
-                usedIntertitles.add(
-                  parseInt(videoSrc.match(/intertitle(\d+)/)[1])
-                );
-              } else {
-                usedVideos.add(parseInt(videoSrc.match(/video(\d+)/)[1]));
-              }
-              revealCard(card, videoSrc);
-            } else {
-              const img = document.createElement("img");
-              img.src = "assets/placeholder.jpg";
-              img.alt = "Placeholder";
-              card.appendChild(img);
-              card.addEventListener("click", () => {
-                if (currentSession[i]) return;
-                let newSrc;
-                if (i === intertitleCardIndex) {
-                  newSrc = getRandomAvailableVideo(true);
-                } else {
-                  newSrc = getRandomAvailableVideo(false);
-                }
-                currentSession[i] = newSrc;
-                revealCard(card, newSrc);
-              });
-            }
-            cards.push(card);
-            cardContainer.appendChild(card);
-          });
-        }
-      } catch (err) {
-        console.error("Error loading session:", err);
-      }
-    };
-    reader.readAsText(file);
+const loadSession = (data) => {
+  clearAllCards();
+  sessionData = data;
+
+  data.forEach((item, index) => {
+    const card = cardContainer.children[index];
+    const videoPath = `assets/${item.type === 'intertitle' ? 'intertitles' : 'videos'}/${item.file}`;
+    assignVideoToCard(card, videoPath);
+    usedVideos.add(parseInt(item.file.match(/\d+/)[0], 10));
+    if (item.type === 'intertitle') usedIntertitle = true;
   });
-  input.click();
-}
+};
 
-document.getElementById("clearBtn").addEventListener("click", clearAllCards);
-document.getElementById("saveSessionBtn").addEventListener("click", saveSession);
-document.getElementById("loadSessionBtn").addEventListener("click", loadSession);
+document.getElementById('clearBtn').addEventListener('click', clearAllCards);
+document.getElementById('saveSessionBtn').addEventListener('click', saveSession);
+document.getElementById('loadSessionBtn').addEventListener('click', () => {
+  document.getElementById('fileInput').click();
+});
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      loadSession(data);
+    } catch (err) {
+      alert('Invalid session file.');
+    }
+  };
+  reader.readAsText(file);
+});
 
-clearAllCards(); // initialize
+initCards();
