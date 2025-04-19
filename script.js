@@ -70,12 +70,41 @@ const assignVideoToCard = (card, videoSrc) => {
     openZoom(videoSrc);
   });
 
+
   videoWrapper.appendChild(video);
   videoWrapper.appendChild(zoomBtn);
   card.innerHTML = '';
   card.appendChild(videoWrapper);
 
   video.load();
+
+  // Try to autoplay safely
+  const tryPlay = () => {
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn("Autoplay failed, waiting for user interaction", err);
+      });
+    }
+  };
+
+    // Ensure muted is set explicitly and play when ready
+  video.muted = true;
+  video.setAttribute("muted", "muted");
+  video.setAttribute("playsinline", "playsinline");
+
+  video.addEventListener("loadeddata", tryPlay);
+  video.addEventListener("canplay", tryPlay);
+
+  // As a fallback, try to play after user interaction
+  const userPlay = () => {
+    tryPlay();
+    document.removeEventListener("click", userPlay);
+    document.removeEventListener("touchstart", userPlay);
+  };
+
+  document.addEventListener("click", userPlay);
+  document.addEventListener("touchstart", userPlay);
 };
 
 const openZoom = (videoSrc) => {
