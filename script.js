@@ -91,6 +91,8 @@ const assignVideoToCard = (card, videoSrc) => {
     // Ensure muted is set explicitly and play when ready
   video.muted = true;
   video.setAttribute("muted", "muted");
+  video.setAttribute("preload", "auto");
+
   video.setAttribute("playsinline", "playsinline");
 
   video.addEventListener("loadeddata", tryPlay);

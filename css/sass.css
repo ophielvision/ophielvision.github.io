@@ -488,7 +488,7 @@ h1 {
   font-weight: 300;
 }
 
-h1 > a {
+.title-link {
   text-decoration: none;
 }
 
@@ -517,14 +517,17 @@ h1 > a {
   left: 0;
   height: 100vh;
   width: 100vw;
-  background-color: #ff0000;
+  background-color: #ff00ff;
   font-size: 1.2em;
   font-weight: 900;
   visibility: hidden;
   opacity: 1;
   z-index: 10;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr 2fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .grid-cell {

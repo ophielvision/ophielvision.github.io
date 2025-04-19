@@ -5,19 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ophiel</title>
   <link rel="stylesheet" href="styles.css" />
+     <link rel="stylesheet" type="text/css" href="./css/sass.css">
+
 </head>
 <body>
+  <div class="container">  
+      <nav>
+        <div class="menu-header index-bg">
+        <input class="menu-btn" type="checkbox" id="menu-btn" autocomplete="off"/>
+        <label class="menu-icon" for="menu-btn">&#x2261</label>
+        <ul class="menu">
+          <li class="grid-cell nav-item"><a href="./index.html" class="nav-link">Home</a></li>
+          <li class="grid-cell nav-item"><a href="./reading.html" class="nav-link">Reading</a></li>
+          <li class="grid-cell nav-item"><a href="./writing.html" class="nav-link">Writing</a></li>
+        </ul>
+      </nav>
+   </div>
   <div id="pageWrapper">
-  <div id="cardContainer" class="card-container"></div>
 
-  <div class="button-bar">
-    <button id="clearBtn">⥀</button>
-    <button id="saveSessionBtn">⥙</button>
-    <button id="loadSessionBtn">⥜</button>
-    <input type="file" id="fileInput" style="display: none;" accept=".json" />
+    <div id="cardContainer" class="card-container"></div>
+
+    <div class="button-bar">
+      <button id="clearBtn">⥀</button>
+      <button id="saveSessionBtn">⥙</button>
+      <button id="loadSessionBtn">⥜</button>
+      <input type="file" id="fileInput" style="display: none;" accept=".json" />
+    </div>
+
+    <div id="zoomOverlay" class="zoomOverlay"></div>
   </div>
-
-  <div id="zoomOverlay" class="zoomOverlay"></div>
 </div>
   <script src="script.js"></script>
 </body>
