@@ -27,52 +27,8 @@ const getUniqueRandom = (total, usedSet) => {
   return num;
 };
 
-const assignVideoToCard = (card, videoSrc) => {
-  card.dataset.revealed = 'true';
-  const videoWrapper = document.createElement('div');
-  videoWrapper.classList.add('videoWrapper');
-
-  const video = document.createElement('video');
-  video.src = videoSrc;
-  video.muted = true;
-  video.autoplay = true;
-  video.loop = true;
-  video.playsInline = true;
-  video.setAttribute("muted", "true");
-
-  const zoomBtn = document.createElement('button');
-  zoomBtn.classList.add('zoomButton');
-  zoomBtn.innerText = '⤢';
-  zoomBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openZoom(videoSrc);
-  });
-
-  videoWrapper.appendChild(video);
-  videoWrapper.appendChild(zoomBtn);
-  card.innerHTML = '';
-  card.appendChild(videoWrapper);
-
-  video.addEventListener("loadeddata", () => {
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.warn("Play failed:", err);
-      });
-    }
-  });
-
-  // iOS and Firefox workaround
-  document.body.addEventListener('touchstart', () => {
-    video.play().catch(() => {});
-  }, { once: true });
-
-  document.body.addEventListener('click', () => {
-    video.play().catch(() => {});
-  }, { once: true });
-};
-
 const onCardClick = (card, index) => {
+  // Prevent re-revealing
   if (card.dataset.revealed === 'true') return;
 
   let videoType = 'video';
@@ -93,28 +49,103 @@ const onCardClick = (card, index) => {
   sessionData[index] = { type: videoType, file: filename };
 };
 
+const assignVideoToCard = (card, videoSrc) => {
+  card.dataset.revealed = 'true';
+
+  const videoWrapper = document.createElement('div');
+  videoWrapper.classList.add('videoWrapper');
+
+  const video = document.createElement('video');
+  video.src = videoSrc;
+  video.autoplay = true;
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+
+  const zoomBtn = document.createElement('button');
+  zoomBtn.classList.add('zoomButton');
+  zoomBtn.innerText = '⤢';
+  zoomBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevent card click
+    openZoom(videoSrc);
+  });
+
+
+  videoWrapper.appendChild(video);
+  videoWrapper.appendChild(zoomBtn);
+  card.innerHTML = '';
+  card.appendChild(videoWrapper);
+
+  video.addEventListener("canplay", () => {
+  video.play().catch(err => {
+    console.warn("Video play failed:", err);
+    });
+  });
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      video.play().catch(err => {
+        console.warn("Play failed:", err);
+      });
+    }, 50); // Sometimes 50–100ms is enough
+  });
+  video.load();
+
+  // Try to autoplay safely
+  const tryPlay = () => {
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn("Autoplay failed, waiting for user interaction", err);
+      });
+    }
+  };
+
+    // Ensure muted is set explicitly and play when ready
+  video.muted = true;
+  video.setAttribute("muted", "muted");
+  video.setAttribute("preload", "auto");
+
+  video.setAttribute("playsinline", "playsinline");
+
+  video.addEventListener("loadeddata", tryPlay);
+  video.addEventListener("canplay", tryPlay);
+
+  // As a fallback, try to play after user interaction
+  const userPlay = () => {
+    tryPlay();
+    document.removeEventListener("click", userPlay);
+    document.removeEventListener("touchstart", userPlay);
+  };
+
+  document.addEventListener("click", userPlay);
+  document.addEventListener("touchstart", userPlay);
+};
+
 const openZoom = (videoSrc) => {
-  const zoomVideo = document.createElement('video');
-  zoomVideo.src = videoSrc;
-  zoomVideo.autoplay = true;
-  zoomVideo.loop = true;
-  zoomVideo.muted = true;
-  zoomVideo.playsInline = true;
+  const clonedVideo = document.createElement('video');
+  clonedVideo.src = videoSrc;
+  clonedVideo.autoplay = true;
+  clonedVideo.loop = true;
+  clonedVideo.muted = true;
+  clonedVideo.playsInline = true;
+  clonedVideo.style.transform = 'scale(0.8)';
 
   zoomOverlay.innerHTML = '';
-  zoomOverlay.appendChild(zoomVideo);
+  zoomOverlay.appendChild(clonedVideo);
   zoomOverlay.classList.add('active');
 
+  requestAnimationFrame(() => {
+    clonedVideo.style.transform = 'scale(1)';
+  });
+
   zoomOverlay.onclick = () => {
+    clonedVideo.style.transform = 'scale(0.8)';
     zoomOverlay.classList.remove('active');
     setTimeout(() => {
       zoomOverlay.innerHTML = '';
     }, 300);
   };
-
-  zoomVideo.addEventListener("loadeddata", () => {
-    zoomVideo.play().catch(err => console.warn("Zoom video play failed:", err));
-  });
 };
 
 const clearAllCards = () => {
@@ -133,11 +164,16 @@ const initCards = () => {
 };
 
 const saveSession = () => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[:.]/g, '-')
+    .replace('T', '_')
+    .split('Z')[0];
+  const fileName = `ophiel-${timestamp}.json`;
   const blob = new Blob([JSON.stringify(sessionData)], { type: 'application/json' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `ophiel-${timestamp}.json`;
+  link.download = fileName;
   link.click();
 };
 

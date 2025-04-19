@@ -9,9 +9,9 @@
 
 </head>
 <body>
-  <div class="outer-wrapper">
-    <nav>
-      <div class="menu-header index-bg">
+  <div class="container">  
+      <nav>
+        <div class="menu-header index-bg">
         <input class="menu-btn" type="checkbox" id="menu-btn" autocomplete="off"/>
         <label class="menu-icon" for="menu-btn">&#x2261</label>
         <ul class="menu">
@@ -19,23 +19,23 @@
           <li class="grid-cell nav-item"><a href="./reading.html" class="nav-link">Reading</a></li>
           <li class="grid-cell nav-item"><a href="./writing.html" class="nav-link">Writing</a></li>
         </ul>
-      </div>
-    </nav>
+      </nav>
+   </div>
+  <div id="pageWrapper">
 
-    <div id="pageWrapper">
-      <div id="cardContainer" class="card-container"></div>
+<!-- ### STOPPP -->
+    <div id="cardContainer" class="card-container"></div>
 
-      <div class="button-bar">
-        <button id="clearBtn">⥀</button>
-        <button id="saveSessionBtn">⥙</button>
-        <button id="loadSessionBtn">⥜</button>
-        <input type="file" id="fileInput" style="display: none;" accept=".json" />
-      </div>
+    <div class="button-bar">
+      <button id="clearBtn">⥀</button>
+      <button id="saveSessionBtn">⥙</button>
+      <button id="loadSessionBtn">⥜</button>
+      <input type="file" id="fileInput" style="display: none;" accept=".json" />
     </div>
 
     <div id="zoomOverlay" class="zoomOverlay"></div>
   </div>
-
+</div>
   <script src="script.js"></script>
 </body>
 </html>
