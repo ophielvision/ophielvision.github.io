@@ -1,0 +1,43 @@
+/**p
+ * Basic typography style for copy text
+ */
+
+body {
+  color: $text-color;
+  font-weight: 300;
+  font-size: 0.2em;
+  font: normal 20px $text-font-stack;
+}
+
+p, li {
+  font-size: 1em;
+}
+
+.header a {
+  text-decoration: none;
+}
+
+body.work-bg {
+  color: $work-text-color;
+}
+
+figcaption
+{
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+.largequote
+{
+  // font-size: 1.5em;
+  // font-weight: 900;
+}
+
+h1
+{
+  font-size: 2em;
+}
+
+.bold-text {
+  font-weight: 900;
+}
