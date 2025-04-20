@@ -1,0 +1,31 @@
+/*body {
+  background-color: black;
+  color: white;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+*/
+.poem-container {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  text-align: left;
+}
+
+.poem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.poem.show {
+  opacity: 1;
+}

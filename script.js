@@ -10,13 +10,13 @@ let sessionData = [];
 const createCard = (index) => {
   const card = document.createElement('div');
   card.classList.add('card');
-  card.innerHTML = `<img src="./assets/placeholder.jpg" alt="Placeholder" />`;
+  card.innerHTML = `<img src="./assets/placeholder.jpg" />`;
   card.addEventListener('click', () => onCardClick(card, index));
   return card;
 };
 
 const generateVideoFilename = (prefix, number) =>
-  `${prefix}${String(number).padStart(3, '0')}.webm`;
+  `${prefix}${String(number).padStart(3, '0')}.mp4`;
 
 const getUniqueRandom = (total, usedSet) => {
   let num;
