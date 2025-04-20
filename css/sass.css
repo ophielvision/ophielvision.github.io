@@ -762,10 +762,6 @@ input[type=checkbox] {
   background-color: hsl(210, 100%, 92%);
 }
 
-.index-bg {
-  background: hsl(0, 0%, 0%);
-}
-
 .index-bg .menu-background {
   background-color: hsl(0, 0%, 0%);
 }
