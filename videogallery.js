@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalDescription = wrapper.querySelector('#description');
 
   const descriptions = {
-    video001: "<p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p><p>This is a placeholder description for Video 001.</p>",
+    video001: "<p>This is a placeholder description for Video 001.</p>",
     video002: "<p>This is a placeholder description for Video 002.</p>",
     video003: "<p>This is a placeholder description for Video 003.</p>",
     intertitle003: "<p>This is a placeholder description for Intertitle 003.</p>",
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
   modal.addEventListener('click', (e) => {
     const wrapper = modal.querySelector('.popup__wrapper');
     if (!wrapper.contains(e.target)) {
