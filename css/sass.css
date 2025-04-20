@@ -492,6 +492,53 @@ h1 {
   text-decoration: none;
 }
 
+/*
+  The grid itself needs only 4 CSS declarations:
+*/
+.myGallery {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.myGallery img {
+  width: 100%;
+}
+
+/*
+  And here are some declarations for the image caption.
+  Just hover over one of the last 5 images to see it.
+*/
+.myGallery .item {
+  position: relative;
+  overflow: hidden;
+}
+
+.myGallery .item img {
+  vertical-align: middle;
+}
+
+.myGallery .caption {
+  margin: 0;
+  padding: 1em;
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+  transition: transform 0.5s;
+  transform: translateY(100%);
+  background: rgba(0, 0, 0, 0.7);
+  color: rgb(255, 255, 255);
+}
+
+.myGallery .item:hover .caption {
+  transform: translateY(0%);
+}
+
 .menu-btn {
   display: none;
 }
@@ -510,6 +557,69 @@ h1 {
   background-color: hsl(0, 0%, 0%);
 }
 
+.button {
+  display: inline-block;
+  border: 1px solid;
+  border-color: #012766;
+  background: #012766;
+  padding: 10px 16px;
+  border-radius: 4px;
+  color: #222222;
+}
+
+[id^=modal] {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+[id^=modal]:target {
+  display: block;
+}
+
+input[type=checkbox] {
+  position: absolute;
+  clip: rect(0 0 0 0);
+}
+
+.popup {
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+}
+
+.popup__overlay {
+  position: fixed;
+  z-index: 1;
+  display: block;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7019607843);
+}
+
+.popup__wrapper {
+  position: fixed;
+  z-index: 9;
+  width: 80%;
+  max-width: 1200px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  padding: 58px 32px 32px 32px;
+  background: #111;
+}
+
+.popup__close {
+  position: absolute;
+  top: 16px;
+  right: 26px;
+  text-decoration: none;
+}
+
 /* menu - navbar */
 .menu {
   position: fixed;
@@ -524,7 +634,7 @@ h1 {
   opacity: 1;
   z-index: 10;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
   list-style: none;
   padding: 0;
   margin: 0;
