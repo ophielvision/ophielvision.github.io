@@ -39,7 +39,8 @@
 
 .menu-header {
   position: fixed;
-  right: 1px;
+  right: 0;
+  top: 0;
   height: calc(1em + 3vw);
   display: flex;
   flex-direction: row;

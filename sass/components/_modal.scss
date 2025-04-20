@@ -32,20 +32,24 @@ input[type=checkbox] {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 110%;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.8); /* optional dark overlay */
   z-index: 1000;
 }
 
 .popup__wrapper {
-  position: relative; /* Add this line */
+  position: relative;
   max-width: 700px;
   margin: 2rem auto;
   background: #111;
   padding: 1rem;
   color: white;
-  overflow: visible;
+  box-sizing: border-box;
+  width: 90vw;
+  overflow-x: hidden;   /* Prevent horizontal bleed */
+  overflow-y: auto;     /* Allow vertical scroll if needed */
+  max-height: 90vh;     /* Optional: cap height to fit viewport */
 }
 
 .popup__close {
@@ -56,11 +60,18 @@ input[type=checkbox] {
 }
 
 .popup__wrapper video {
-  width: 100%;
-  max-width: 640px;
-  height: auto;
   display: block;
-  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  width: 100%; /* Helps ensure scaling works consistently */
+  box-sizing: border-box;
+}
+
+@media (min-width: 700px) {
+  .popup__wrapper video {
+    max-width: 640px;
+    margin: 0 auto;
+  }
 }
 
 .popup__wrapper h2 {

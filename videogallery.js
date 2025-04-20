@@ -36,9 +36,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   modal.addEventListener('click', (e) => {
-  const wrapper = modal.querySelector('.popup__wrapper');
-  if (!wrapper.contains(e.target)) {
-    window.location.hash = '#closemodal';
+    const wrapper = modal.querySelector('.popup__wrapper');
+    if (!wrapper.contains(e.target)) {
+      window.location.hash = '#closemodal';
+    }
+  });
+
+  function updateViewportHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
   }
-});
+
+// Run on load
+  updateViewportHeight();
+
+// Run on resize or orientation change
+  window.addEventListener('resize', updateViewportHeight);
+
+
 });
