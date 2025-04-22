@@ -539,7 +539,7 @@ h1 {
   transform: translateY(0%);
 }
 
-.indented-h2 {
+.indented-heading {
   padding-left: 20px;
   padding-right: 20px;
 }

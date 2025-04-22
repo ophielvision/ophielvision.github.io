@@ -7,10 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalDescription = wrapper.querySelector('#description');
 
   const descriptions = {
-    video001: "<p>This is a placeholder description for Video 001.</p>",
-    video002: "<p>This is a placeholder description for Video 002.</p>",
-    video003: "<p>This is a placeholder description for Video 003.</p>",
-    intertitle003: "<p>This is a placeholder description for Intertitle 003.</p>",
+    video059: "<p>Home of the Board</p>",
+    video060: "<p>Home of the Watchers</p>",
+    video061: "<p>Home of the Dreamers</p>",
+    video062: "<p>Home of the Imps</p>",
+    video063: "<p>Home of the Staff</p>",
+    video064: "<p>Home of the Operators</p>",
+
+    intertitle003: "<p>At twelve days, the<br \>life blood begins to<br \> circulate</p>",
     // Add more here
   };
 
@@ -27,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       modalTitle.textContent = alt;
       modalVideo.src = `assets/${folder}/${filename}.mp4`;
-      modalDescription.innerHTML = descriptions[filename] || "<p>No description available.</p>";
+      modalDescription.innerHTML = descriptions[filename] || "<p>---</p>";
 
       modalVideo.load();
       modalVideo.play().catch(err => {
