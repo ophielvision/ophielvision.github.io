@@ -62,17 +62,12 @@ const assignVideoToCard = (card, videoSrc) => {
   video.muted = true;
   video.playsInline = true;
 
-  const zoomBtn = document.createElement('button');
-  zoomBtn.classList.add('zoomButton');
-  zoomBtn.innerText = '⤢';
-  zoomBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevent card click
+  card.addEventListener('click', (e) => {
     openZoom(videoSrc);
   });
 
 
   videoWrapper.appendChild(video);
-  videoWrapper.appendChild(zoomBtn);
   card.innerHTML = '';
   card.appendChild(videoWrapper);
 
