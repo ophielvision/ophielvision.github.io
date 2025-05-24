@@ -1,3 +1,5 @@
+@use "../abstracts/variables";
+
 // -----------------------------------------------------------------------------
 // This file contains all styles related to the menu button component.
 // -----------------------------------------------------------------------------
@@ -21,5 +23,5 @@
 .menu-btn:checked ~ .menu {
     visibility: visible;
     z-index: 10;
-    background-color: $index-bg-color;
+    background-color: variables.$index-bg-color;
   }

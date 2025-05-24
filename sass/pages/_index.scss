@@ -1,7 +1,9 @@
+@use "../abstracts/variables";
+
 .index-bg {
   // background: $index-bg-color;
 }
 
 .index-bg .menu-background {
-  background-color: $index-bg-color;
+  background-color: variables.$index-bg-color;
 }
