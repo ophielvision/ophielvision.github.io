@@ -667,7 +667,7 @@ input[type=checkbox] {
   opacity: 1;
   z-index: 10;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -705,7 +705,7 @@ input[type=checkbox] {
   display: flex;
   flex-flow: column wrap;
   max-height: 20vh;
-  min-height: 400px;
+  min-height: 200px;
 }
 
 .menu > ul > li {
